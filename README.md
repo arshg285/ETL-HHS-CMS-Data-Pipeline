@@ -4,6 +4,8 @@ The module `load_hhs.py` taking in the HHS data file as the input, performs data
 
 The `load_quality.py` module takes in the CMS quality files and takes the following steps:
 
-\begin{enumerate}
-  \item Takes in the 
- \end{enumerate}
++ Takes in the CMS quality CSV file checks if the hospitals listed in there are already existing in the SQL schema or not.
+
++ If not, then it adds the hospital as a new one.
+
++ If so, then it updates the columns in the existing tables with the new values inputted.
