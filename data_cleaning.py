@@ -3,7 +3,7 @@ import pandas as pd
 import datetime
 
 def data_cleaning_hhs(file):
-    missing_values = [-999999, "NaN", "Not Available"]
+    missing_values = [-999999, "NaN", "Not Available", "nan"]
     hhs_data = pd.read_csv(file, na_values=missing_values)
     # Data type converting
 
@@ -19,7 +19,7 @@ def data_cleaning_hhs(file):
 
 def data_cleaning_hginfo(date, hginfo):
     # Missing value
-    missing_values = [-999999, "NaN", "Not Available"]
+    missing_values = [-999999, "NaN", "Not Available", "nan"]
     hginfo = pd.read_csv(hginfo, na_values=missing_values)
 
     #date_input
@@ -28,7 +28,3 @@ def data_cleaning_hginfo(date, hginfo):
     except:
         raise ValueError("Incorrect data format, should be YYYY-mm-dd")
     return hginfo
-
-
-
-
