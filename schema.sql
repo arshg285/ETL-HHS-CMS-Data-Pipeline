@@ -12,7 +12,7 @@ create table address (
 	city varchar(255),
 	state char(2),
 	zip varchar(9),
-	fips_code integer
+	fips_code numeric
 );
 
 
@@ -23,12 +23,12 @@ create table address (
 
 create table capacity_info (
 	hospital_pk text REFERENCES address (hospital_pk),
-	adult_hospital_beds numeric CHECK(adult_hospital_beds >= 0),
-	pediatric_inpatient_beds numeric CHECK (pediatric_inpatient_beds >= 0),
-	adult_hospital_inpatient_bed_occupied numeric CHECK (adult_hospital_inpatient_bed_occupied >= 0),
-	pediatric_inpatient_bed_occupied numeric CHECK (pediatric_inpatient_bed_occupied >= 0),
-	total_icu_beds int CHECK (total_icu_beds >= 0),
-	icu_beds_used int CHECK (icu_beds_used >= 0),
+	adult_hospital_beds numeric,
+	pediatric_inpatient_beds numeric,
+	adult_hospital_inpatient_bed_occupied numeric,
+	pediatric_inpatient_bed_occupied numeric,
+	total_icu_beds numeric,
+	icu_beds_used numeric,
 	CHECK (icu_beds_used <= total_icu_beds)
  );
 
@@ -40,13 +40,13 @@ create table capacity_info (
 Create table COVID_info (
 	hospital_pk text REFERENCES address (hospital_pk),
 	hospital_name text NOT NULL,
-	inpatient_beds_used_covid_7_day_avg integer
+	inpatient_beds_used_covid_7_day_avg numeric
 	CHECK (inpatient_beds_used_covid_7_day_avg >= 0),
-	staffed_adult_icu_patients_confirmed_covid_7_day_avg integer
+	staffed_adult_icu_patients_confirmed_covid_7_day_avg numeric
 	CHECK (staffed_adult_icu_patients_confirmed_covid_7_day_avg >= 0),
-	total_icu_beds_7_day_avg integer
+	total_icu_beds_7_day_avg numeric
 	CHECK (total_icu_beds_7_day_avg >= 0),
-	icu_beds_used_7_day_avg integer
+	icu_beds_used_7_day_avg numeric
 	CHECK (icu_beds_used_7_day_avg >= 0),	
 	CHECK (inpatient_beds_used_covid_7_day_avg >= staffed_adult_icu_patients_confirmed_covid_7_day_avg)
 );
