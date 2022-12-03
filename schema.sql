@@ -53,7 +53,7 @@ Create table COVID_info (
 
 
 -- Table: Ratings
--- The ratings table contains information about the rating for each hospital in the HHS data set.
+-- The ratings table contains information about the rating for each hospital in the CMS data set.
 -- In addition to containing information about the overall rating, it also contains information about the type of hospital and whether it offers emergency services or not since that can potentially have an influence on the overall rating.
 
 create table ratings (	
