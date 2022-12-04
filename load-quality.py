@@ -62,11 +62,11 @@ with conn.transaction():
                             "%(type)s, "
                             "%(emergency_services_provided)s)",
                             {'hospital_name' : str(row.hospital_name),
-                                'hospital_pk' : str(row.hospital_pk),
-                                'collection_week' : date(row.collection_week),
-                                'overall_quality_rating' : float(row.overall_quality_rating),
-                                'type' : str(row.type),
-                                'emergency_services_provided' : bool(row.emergency_services_provided)})
+                             'hospital_pk' : str(row.hospital_pk),
+                             'collection_week' : date(row.collection_week),
+                             'overall_quality_rating' : float(row.overall_quality_rating),
+                             'type' : str(row.type),
+                             'emergency_services_provided' : bool(row.emergency_services_provided)})
 
         except Exception as e:
             row = dict(row)
