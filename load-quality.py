@@ -4,6 +4,7 @@ import pandas as pd
 import requests
 import io
 from credentials import username, password
+import datetime
 import sys
 from data_cleaning import data_cleaning_hginfo
 
@@ -11,7 +12,7 @@ from data_cleaning import data_cleaning_hginfo
 input_date = sys.argv[1]
 cms_file = sys.argv[2]
 file = str('/Users/arshmacbook/Desktop/36-614/Project/hospital_quality_files/' + cms_file) # Change this to user directory
-cms = data_cleaning_hginfo(date, file)
+cms = data_cleaning_hginfo(input_date, file)
 
 # Establishing SQL connection
 conn = psycopg.connect(
@@ -50,7 +51,7 @@ with conn.transaction():
                             "%(emergency_services_provided)s)",
                             {'hospital_name' : str(row.hospital_name),
                              'hospital_pk' : str(row.hospital_pk),
-                             'collection_week' : date(input_date),
+                             'collection_week' : datetime(input_date),
                              'overall_quality_rating' : float(row.overall_quality_rating),
                              'type' : str(row.type),
                              'emergency_services_provided' : bool(row.emergency_services_provided)})
