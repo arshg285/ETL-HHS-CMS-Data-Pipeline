@@ -17,19 +17,6 @@ cms = data_cleaning_hginfo(date, file)
 conn = psycopg.connect(
     host = "sculptor.stat.cmu.edu",
     dbname = "arshg",
-    user = %(username)s,
-    password = %(password)s,
-    params = {'username' : username,
-              'password' : password}
-)
-
-# Creating a cursor object
-cur = conn.cursor()
-
-# Establishing SQL connection
-conn = psycopg.connect(
-    host = "sculptor.stat.cmu.edu",
-    dbname = "arshg",
     user = username,
     password = password
 )
