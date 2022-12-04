@@ -24,7 +24,7 @@ def data_cleaning_hginfo(date, hginfo):
 
     #date_input
     try:
-       hginfo['updated_date'] = datetime.datetime.strptime(date, '%Y-%m-%d')
+       hginfo['collection_week'] = datetime.datetime.strptime(date, '%Y-%m-%d')
     except:
         raise ValueError("Incorrect data format, should be YYYY-mm-dd")
     return hginfo
