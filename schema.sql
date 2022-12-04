@@ -23,6 +23,7 @@ create table address (
 
 create table capacity_info (
 	hospital_pk text REFERENCES address (hospital_pk),
+	collection_week date,
 	adult_hospital_beds numeric,
 	pediatric_inpatient_beds numeric,
 	adult_hospital_inpatient_bed_occupied numeric,
@@ -40,6 +41,7 @@ create table capacity_info (
 Create table COVID_info (
 	hospital_pk text REFERENCES address (hospital_pk),
 	hospital_name text NOT NULL,
+	collection_week date,
 	inpatient_beds_used_covid_7_day_avg numeric
 	CHECK (inpatient_beds_used_covid_7_day_avg >= 0),
 	staffed_adult_icu_patients_confirmed_covid_7_day_avg numeric
@@ -53,12 +55,13 @@ Create table COVID_info (
 
 
 -- Table: Ratings
--- The ratings table contains information about the rating for each hospital in the CMS data set.
+-- The ratings table contains information about the rating for each hospital in the HHS data set.
 -- In addition to containing information about the overall rating, it also contains information about the type of hospital and whether it offers emergency services or not since that can potentially have an influence on the overall rating.
 
 create table ratings (	
 	hospital_name text not null,
 	hospital_pk text references address (hospital_pk),
+	collection_week date,
 	overall_quality_rating numeric check (overall_quality_rating >= 0),
 	type varchar(255) check (type in ('Government - Hospital District or Authority',
 	'Proprietary',
