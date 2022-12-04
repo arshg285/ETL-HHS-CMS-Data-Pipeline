@@ -8,7 +8,7 @@ import sys
 from data_cleaning import data_cleaning_hginfo
 
 # Data loading and cleaning
-date = sys.argv[1]
+input_date = sys.argv[1]
 cms_file = sys.argv[2]
 file = str('/Users/arshmacbook/Desktop/36-614/Project/hospital_quality_files/' + cms_file) # Change this to user directory
 cms = data_cleaning_hginfo(date, file)
@@ -50,7 +50,7 @@ with conn.transaction():
                             "%(emergency_services_provided)s)",
                             {'hospital_name' : str(row.hospital_name),
                              'hospital_pk' : str(row.hospital_pk),
-                             'collection_week' : date(row.collection_week),
+                             'collection_week' : date(input_date),
                              'overall_quality_rating' : float(row.overall_quality_rating),
                              'type' : str(row.type),
                              'emergency_services_provided' : bool(row.emergency_services_provided)})
