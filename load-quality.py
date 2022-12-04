@@ -8,12 +8,10 @@ import sys
 from data_cleaning import data_cleaning_hginfo
 
 # Data loading and cleaning
-# date = sys.argv[1]
-# hhs_file = sys.argv[2]
-date = '2021-07-01'
-cms_file = 'Hospital_General_Information-2021-07.csv'
-file = str('/Users/arshmacbook/Desktop/36-614/Project/hospital_quality_files/' + cms_file)
-cms = data_cleaning_hginfo(date, file)[:5]
+date = sys.argv[1]
+cms_file = sys.argv[2]
+file = str('/Users/arshmacbook/Desktop/36-614/Project/hospital_quality_files/' + cms_file) # Change this to user directory
+cms = data_cleaning_hginfo(date, file)
 
 # Establishing SQL connection
 conn = psycopg.connect(
@@ -45,86 +43,34 @@ num_rows_error_cms = 0
 
 # Using try-except blocks to perform transactions and insert rows into the database
 with conn.transaction():
-    for column_name, row in cms_hospital_quality.iterrows():
+    for column, row in cms.iterrows():
         try:
             with conn.transaction():
-                    
-                # If a hospital already exists in the table then update existing values
-                cur.execute("SELECT hospital_pk FROM address")
-                existing_hospitals = pd.Series(cur.fetchall())
-                if row.hospital_pk in existing_hospitals:
-                    
-                    # Update info in ratings table
-                    cur.execute("UPDATE ratings "
-                                "SET overall_quality_rating = %(overall_quality_rating)s, "
-                                "type = %(type)s, "
-                                "emergency_services_provided = %(emergency_services_provided)s "
-                                "WHERE hospital_pk = %(hospital_pk)s",
-                                {'overall_quality_rating' : float(row.overall_quality_rating),
-                                 'type' : str(row.type),
-                                 'emergency_services_provided' : bool(row.emergency_services_provided),
-                                 'hospital_pk' : str(row.hospital_pk)})
-                    
-                # If the hospital does not exist in the table then insert it
-                else:
-                    
-                    # Add row to address table
-                    cur.execute("INSERT into address "
-                                "(hospital_name, "
-                                "hospital_pk, "
-                                "address, "
-                                "city, "
-                                "state, "
-                                "zip) "
-                                "VALUES (%(hospital_name)s, "
-                                "%(hospital_pk)s, "
-                                "%(address)s, "
-                                "%(city)s, "
-                                "%(state)s, "
-                                "%(zip)s)",
-                                {'hospital_name' : str(row.hospital_name),
-                                 'hospital_pk' : str(row.hospital_pk),
-                                 'address': str(row.address),
-                                 'city': str(row.city),
-                                 'state': str(row.state),
-                                 'zip': str(row.zip)})
-
-                    # Add rows to capacity info table
-                    cur.execute("INSERT into capacity_info "
-                                "(hospital_pk) "
-                                "VALUES (%(hospital_pk)s)",
-                                {'hospital_pk' : str(row.hospital_pk)})
-
-                    # Add rows to covid info table
-                    cur.execute("INSERT into covid_info "
-                                "(hospital_pk, "
-                                "hospital_name) "
-                                "VALUES (%(hospital_pk)s), "
-                                "%(hospital_name)s)",
-                                {'hospital_pk' : str(row.hospital_pk),
-                                 'hospital_name' : str(row.hospital_name)})
-
-                    # Add rows to ratings table
-                    cur.execute("INSERT into ratings "
-                                "(hospital_name, "
-                                "hospital_pk, "
-                                "overall_quality_rating, "
-                                "type, "
-                                "emergency_services_provided) "
-                                "VALUES (%(hospital_name)s, "
-                                "%(hospital_pk)s, "
-                                "%(emergency_services_provided)s, "
-                                "%(type)s, "
-                                "%(emergency_services_provided)s)",
-                                {'hospital_name' : str(row.hospital_name),
-                                 'hospital_pk' : str(row.hospital_pk),
-                                 'overall_quality_rating' : float(row.overall_quality_rating),
-                                 'type' : str(row.type),
-                                 'emergency_services_provided' : bool(row.emergency_services_provided)})
+                
+                # If a hospital already exists in the address table then add row to ratings table
+                cur.execute("INSERT into ratings "
+                            "(hospital_name, "
+                            "hospital_pk, "
+                            "collection_week, "
+                            "overall_quality_rating, "
+                            "type, "
+                            "emergency_services_provided) "
+                            "VALUES (%(hospital_name)s, "
+                            "%(hospital_pk)s, "
+                            "%(collection_week)s, "
+                            "%(emergency_services_provided)s, "
+                            "%(type)s, "
+                            "%(emergency_services_provided)s)",
+                            {'hospital_name' : str(row.hospital_name),
+                                'hospital_pk' : str(row.hospital_pk),
+                                'collection_week' : date(row.collection_week),
+                                'overall_quality_rating' : float(row.overall_quality_rating),
+                                'type' : str(row.type),
+                                'emergency_services_provided' : bool(row.emergency_services_provided)})
 
         except Exception as e:
             row = dict(row)
-            error_rows_cms = error_rows_cms.append(row, ignore_index = True)
+            error_rows_hhs = error_rows_hhs.append(row, ignore_index = True)
             num_rows_error_cms += 1
 
         else:

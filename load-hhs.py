@@ -9,11 +9,10 @@ from data_cleaning import data_cleaning_hhs
 import warnings
 warnings.filterwarnings('ignore')
 
-# # Data loading and cleaning
-# hhs_file = sys.argv[1]
-hhs_file = '2022-09-23-hhs-data.csv'
-file = str('/Users/arshmacbook/Desktop/36-614/Project/hhs_weekly_data_files/' + hhs_file)
-hhs = data_cleaning_hhs(file)[:50]
+# Data loading and cleaning
+hhs_file = sys.argv[1]
+file = str('/Users/arshmacbook/Desktop/36-614/Project/hhs_weekly_data_files/' + hhs_file) # Change this to user directory
+hhs = data_cleaning_hhs(file)
 
 # Establishing SQL connection
 conn = psycopg.connect(
@@ -36,11 +35,11 @@ with conn.transaction():
         try:
             with conn.transaction():
                 
-                # If a hospital already exists in the table then update existing values
+                # If a hospital already exists in the table then update values in the address table
                 cur.execute("SELECT hospital_pk FROM address")
                 existing_hospitals = pd.Series(cur.fetchall())
                 if row.hospital_pk in existing_hospitals:
-                    
+
                     # Update info in address table
                     cur.execute("UPDATE address "
                                  "SET hospital_name = %(hospital_name)s, "
@@ -58,49 +57,10 @@ with conn.transaction():
                                   'zip' : str(row.zip),
                                   'fips_code' : float(row.fips_code)})
 
-                    # Update info in capacity info table
-                    cur.execute("UPDATE capacity_info "
-                                "SET adult_hospital_beds = $(adult_hospital_beds)s, "
-                                "pediatric_inpatient_beds = $(pediatric_inpatient_beds)s, "
-                                "adult_hospital_inpatient_bed_occupied = $(adult_hospital_inpatient_bed_occupied)s, "
-                                "pediatric_inpatient_bed_occupied = $(pediatric_inpatient_bed_occupied)s, "
-                                "total_icu_beds = $(total_icu_beds)s, "
-                                "icu_beds_used = $(icu_beds_used)s "
-                                "WHERE hospital_pk = %(hospital_pk)s",
-                                {'hospital_pk' : str(row.hospital_pk),
-                                 'adult_hospital_beds' : float(row.all_adult_hospital_beds_7_day_avg),
-                                 'pediatric_inpatient_beds' : float(row.all_pediatric_inpatient_beds_7_day_avg),
-                                 'adult_hospital_inpatient_bed_occupied' : float(row.all_adult_hospital_inpatient_bed_occupied_7_day_coverage),
-                                 'pediatric_inpatient_bed_occupied' : float(row.all_pediatric_inpatient_bed_occupied_7_day_avg),
-                                 'total_icu_beds' : float(row.total_icu_beds_7_day_avg),
-                                 'icu_beds_used' : float(row.icu_beds_used_7_day_avg)})
-
-                    # Update info in covid info table
-                    cur.execute("UPDATE covid_info "
-                                "SET hospital_name = %(hospital_name)s, "
-                                "inpatient_beds_used_covid_7_day_avg = %(inpatient_beds_used_covid_7_day_avg)s, "
-                                "staffed_adult_icu_patients_confirmed_covid_7_day_avg = %(staffed_adult_icu_patients_confirmed_covid_7_day_avg)s, "
-                                "total_icu_beds_7_day_avg = %(total_icu_beds_7_day_avg)s, "
-                                "icu_beds_used_7_day_avg) = %(icu_beds_used_7_day_avg)s "
-                                "WHERE hospital_pk = %(hospital_pk)s",
-                                {'hospital_pk' : str(row.hospital_pk),
-                                 'hospital_name' : str(row.hospital_name),
-                                 'inpatient_beds_used_covid_7_day_avg' : float(row.inpatient_beds_used_covid_7_day_avg),
-                                 'staffed_adult_icu_patients_confirmed_covid_7_day_avg' : float(row.staffed_icu_adult_patients_confirmed_covid_7_day_avg),
-                                 'total_icu_beds_7_day_avg' : float(row.total_icu_beds_7_day_avg),
-                                 'icu_beds_used_7_day_avg' : float(row.icu_beds_used_7_day_avg)})
-
-                    # Update info in ratings table
-                    cur.execute("UPDATE ratings "
-                                "SET hospital_name = %(hospital_name)s "
-                                "WHERE hospital_pk = %(hospital_pk)s ",
-                                {'hospital_name' : str(row.hospital_name),
-                                 'hospital_pk' : str(row.hospital_pk)})
-                    
-                # If the hospital does not exist in the table then insert it
+                # If the hospital does not exist in the address table then insert it
                 else:
-                
-                    # Add rows to address table
+
+                    # Add row to address table
                     cur.execute("INSERT into address "
                                  "(hospital_name, "
                                  "hospital_pk, "
@@ -124,59 +84,56 @@ with conn.transaction():
                                   'zip' : str(row.zip),
                                   'fips_code' : float(row.fips_code)})
 
-                    # Add rows to capacity info table
-                    cur.execute("INSERT into capacity_info "
-                                "(hospital_pk, "
-                                "adult_hospital_beds, "
-                                "pediatric_inpatient_beds, "
-                                "adult_hospital_inpatient_bed_occupied, "
-                                "pediatric_inpatient_bed_occupied, "
-                                "total_icu_beds, "
-                                "icu_beds_used) "
-                                "VALUES (%(hospital_pk)s, "
-                                "%(adult_hospital_beds)s, "
-                                "%(pediatric_inpatient_beds)s, "
-                                "%(adult_hospital_inpatient_bed_occupied)s, "
-                                "%(pediatric_inpatient_bed_occupied)s, "
-                                "%(total_icu_beds)s, "
-                                "%(icu_beds_used)s)",
-                                {'hospital_pk' : str(row.hospital_pk),
-                                 'adult_hospital_beds' : float(row.all_adult_hospital_beds_7_day_avg),
-                                 'pediatric_inpatient_beds' : float(row.all_pediatric_inpatient_beds_7_day_avg),
-                                 'adult_hospital_inpatient_bed_occupied' : float(row.all_adult_hospital_inpatient_bed_occupied_7_day_coverage),
-                                 'pediatric_inpatient_bed_occupied' : float(row.all_pediatric_inpatient_bed_occupied_7_day_avg),
-                                 'total_icu_beds' : float(row.total_icu_beds_7_day_avg),
-                                 'icu_beds_used' : float(row.icu_beds_used_7_day_avg)})
+                # Add row to capacity info table
+                cur.execute("INSERT into capacity_info "
+                            "(hospital_pk, "
+                            "collection_week, "
+                            "adult_hospital_beds, "
+                            "pediatric_inpatient_beds, "
+                            "adult_hospital_inpatient_bed_occupied, "
+                            "pediatric_inpatient_bed_occupied, "
+                            "total_icu_beds, "
+                            "icu_beds_used) "
+                            "VALUES (%(hospital_pk)s, "
+                            "%(collection_week)s, "
+                            "%(adult_hospital_beds)s, "
+                            "%(pediatric_inpatient_beds)s, "
+                            "%(adult_hospital_inpatient_bed_occupied)s, "
+                            "%(pediatric_inpatient_bed_occupied)s, "
+                            "%(total_icu_beds)s, "
+                            "%(icu_beds_used)s)",
+                            {'hospital_pk' : str(row.hospital_pk),
+                             'collection_week' : datetime(row.collection_week),
+                             'adult_hospital_beds' : float(row.all_adult_hospital_beds_7_day_avg),
+                             'pediatric_inpatient_beds' : float(row.all_pediatric_inpatient_beds_7_day_avg),
+                             'adult_hospital_inpatient_bed_occupied' : float(row.all_adult_hospital_inpatient_bed_occupied_7_day_coverage),
+                             'pediatric_inpatient_bed_occupied' : float(row.all_pediatric_inpatient_bed_occupied_7_day_avg),
+                             'total_icu_beds' : float(row.total_icu_beds_7_day_avg),
+                             'icu_beds_used' : float(row.icu_beds_used_7_day_avg)})
 
-                    # Add rows to covid info table
-                    cur.execute("INSERT into covid_info "
-                                "(hospital_pk, "
-                                "hospital_name, "
-                                "inpatient_beds_used_covid_7_day_avg, "
-                                "staffed_adult_icu_patients_confirmed_covid_7_day_avg, "
-                                "total_icu_beds_7_day_avg, "
-                                "icu_beds_used_7_day_avg) "
-                                "VALUES (%(hospital_pk)s, "
-                                "%(hospital_name)s, "
-                                "%(inpatient_beds_used_covid_7_day_avg)s, "
-                                "%(staffed_adult_icu_patients_confirmed_covid_7_day_avg)s, "
-                                "%(total_icu_beds_7_day_avg)s, "
-                                "%(icu_beds_used_7_day_avg)s)",
-                                {'hospital_pk' : str(row.hospital_pk),
-                                 'hospital_name' : str(row.hospital_name),
-                                 'inpatient_beds_used_covid_7_day_avg' : float(row.inpatient_beds_used_covid_7_day_avg),
-                                 'staffed_adult_icu_patients_confirmed_covid_7_day_avg' : float(row.staffed_icu_adult_patients_confirmed_covid_7_day_avg),
-                                 'total_icu_beds_7_day_avg' : float(row.total_icu_beds_7_day_avg),
-                                 'icu_beds_used_7_day_avg' : float(row.icu_beds_used_7_day_avg)})
-
-                    # Add rows to ratings table
-                    cur.execute("INSERT into ratings "
-                                "(hospital_name, "
-                                "hospital_pk) "
-                                "VALUES (%(hospital_name)s, "
-                                "%(hospital_pk)s)",
-                                {'hospital_name' : str(row.hospital_name),
-                                 'hospital_pk' : str(row.hospital_pk)})
+                # Add row to covid info table
+                cur.execute("INSERT into covid_info "
+                            "(hospital_pk, "
+                            "hospital_name, "
+                            "collection_week, "
+                            "inpatient_beds_used_covid_7_day_avg, "
+                            "staffed_adult_icu_patients_confirmed_covid_7_day_avg, "
+                            "total_icu_beds_7_day_avg, "
+                            "icu_beds_used_7_day_avg) "
+                            "VALUES (%(hospital_pk)s, "
+                            "%(hospital_name)s, "
+                            "%(collection_week)s"
+                            "%(inpatient_beds_used_covid_7_day_avg)s, "
+                            "%(staffed_adult_icu_patients_confirmed_covid_7_day_avg)s, "
+                            "%(total_icu_beds_7_day_avg)s, "
+                            "%(icu_beds_used_7_day_avg)s)",
+                            {'hospital_pk' : str(row.hospital_pk),
+                             'hospital_name' : str(row.hospital_name),
+                             'collection_week' : datetime(row.collection_week),
+                             'inpatient_beds_used_covid_7_day_avg' : float(row.inpatient_beds_used_covid_7_day_avg),
+                             'staffed_adult_icu_patients_confirmed_covid_7_day_avg' : float(row.staffed_icu_adult_patients_confirmed_covid_7_day_avg),
+                             'total_icu_beds_7_day_avg' : float(row.total_icu_beds_7_day_avg),
+                             'icu_beds_used_7_day_avg' : float(row.icu_beds_used_7_day_avg)})
 
         except Exception as e:
             row = dict(row)
