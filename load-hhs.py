@@ -4,7 +4,6 @@ import time
 from credentials import username, password
 import numpy as np
 import sys
-import datetime
 from data_cleaning import data_cleaning_hhs
 import warnings
 warnings.filterwarnings('ignore')
@@ -84,7 +83,7 @@ with conn.transaction():
                                   'zip' : str(row.zip),
                                   'fips_code' : float(row.fips_code)})
 
-                # Add row to capacity info table
+                # Add rows to capacity info table
                 cur.execute("INSERT into capacity_info "
                             "(hospital_pk, "
                             "collection_week, "
@@ -103,7 +102,7 @@ with conn.transaction():
                             "%(total_icu_beds)s, "
                             "%(icu_beds_used)s)",
                             {'hospital_pk' : str(row.hospital_pk),
-                             'collection_week' : datetime(row.collection_week),
+                             'collection_week' : str(row.collection_week),
                              'adult_hospital_beds' : float(row.all_adult_hospital_beds_7_day_avg),
                              'pediatric_inpatient_beds' : float(row.all_pediatric_inpatient_beds_7_day_avg),
                              'adult_hospital_inpatient_bed_occupied' : float(row.all_adult_hospital_inpatient_bed_occupied_7_day_coverage),
@@ -111,7 +110,7 @@ with conn.transaction():
                              'total_icu_beds' : float(row.total_icu_beds_7_day_avg),
                              'icu_beds_used' : float(row.icu_beds_used_7_day_avg)})
 
-                # Add row to covid info table
+                # Add rows to covid info table
                 cur.execute("INSERT into covid_info "
                             "(hospital_pk, "
                             "hospital_name, "
@@ -122,14 +121,14 @@ with conn.transaction():
                             "icu_beds_used_7_day_avg) "
                             "VALUES (%(hospital_pk)s, "
                             "%(hospital_name)s, "
-                            "%(collection_week)s"
+                            "%(collection_week)s, "
                             "%(inpatient_beds_used_covid_7_day_avg)s, "
                             "%(staffed_adult_icu_patients_confirmed_covid_7_day_avg)s, "
                             "%(total_icu_beds_7_day_avg)s, "
                             "%(icu_beds_used_7_day_avg)s)",
                             {'hospital_pk' : str(row.hospital_pk),
                              'hospital_name' : str(row.hospital_name),
-                             'collection_week' : datetime(row.collection_week),
+                             'collection_week' : str(row.collection_week),
                              'inpatient_beds_used_covid_7_day_avg' : float(row.inpatient_beds_used_covid_7_day_avg),
                              'staffed_adult_icu_patients_confirmed_covid_7_day_avg' : float(row.staffed_icu_adult_patients_confirmed_covid_7_day_avg),
                              'total_icu_beds_7_day_avg' : float(row.total_icu_beds_7_day_avg),

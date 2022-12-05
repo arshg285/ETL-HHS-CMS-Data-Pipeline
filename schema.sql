@@ -74,5 +74,5 @@ create table ratings (
 	'Tribal',
 	'Department of Defense',
 	'Physician')),
-	emergency_services_provided boolean default false
+	emergency_services_provided boolean default False
 );

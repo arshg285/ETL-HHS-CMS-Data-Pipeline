@@ -4,7 +4,6 @@ import pandas as pd
 import requests
 import io
 from credentials import username, password
-import datetime
 import sys
 from data_cleaning import data_cleaning_hginfo
 
@@ -13,6 +12,20 @@ input_date = sys.argv[1]
 cms_file = sys.argv[2]
 file = str('/Users/arshmacbook/Desktop/36-614/Project/hospital_quality_files/' + cms_file) # Change this to user directory
 cms = data_cleaning_hginfo(input_date, file)
+
+
+# Establishing SQL connection
+conn = psycopg.connect(
+    host = "sculptor.stat.cmu.edu",
+    dbname = "arshg",
+    user = %(username)s,
+    password = %(password)s,
+    params = {'username' : username,
+              'password' : password}
+)
+
+# Creating a cursor object
+cur = conn.cursor()
 
 # Establishing SQL connection
 conn = psycopg.connect(
@@ -46,19 +59,19 @@ with conn.transaction():
                             "VALUES (%(hospital_name)s, "
                             "%(hospital_pk)s, "
                             "%(collection_week)s, "
-                            "%(emergency_services_provided)s, "
+                            "%(overall_quality_rating)s, "
                             "%(type)s, "
                             "%(emergency_services_provided)s)",
-                            {'hospital_name' : str(row.hospital_name),
-                             'hospital_pk' : str(row.hospital_pk),
-                             'collection_week' : datetime(input_date),
-                             'overall_quality_rating' : float(row.overall_quality_rating),
-                             'type' : str(row.type),
-                             'emergency_services_provided' : bool(row.emergency_services_provided)})
+                            {'hospital_name' : str(row['Facility Name']),
+                             'hospital_pk' : str(row['Facility ID']),
+                             'collection_week' : str(row.collection_week),
+                             'overall_quality_rating' : float(row['Hospital overall rating']),
+                             'type' : str(row['Hospital Ownership']),
+                             'emergency_services_provided' : row.emergency_services_provided})
 
         except Exception as e:
             row = dict(row)
-            error_rows_hhs = error_rows_hhs.append(row, ignore_index = True)
+            error_rows_cms = error_rows_cms.append(row, ignore_index = True)
             num_rows_error_cms += 1
 
         else:
