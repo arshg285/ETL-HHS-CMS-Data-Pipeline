@@ -2,6 +2,7 @@
 import psycopg
 import pandas as pd
 import requests
+import time
 import io
 from credentials import username, password
 import sys
@@ -22,7 +23,7 @@ conn = psycopg.connect(
     password = %(password)s,
     params = {'username' : username,
               'password' : password}
-)
+    )
 
 # Creating a cursor object
 cur = conn.cursor()
@@ -41,6 +42,8 @@ cur = conn.cursor()
 error_rows_cms = pd.DataFrame()
 num_rows_successfully_inserted_cms = 0
 num_rows_error_cms = 0
+
+start_time = time.time()
 
 # Using try-except blocks to perform transactions and insert rows into the database
 with conn.transaction():
@@ -80,12 +83,15 @@ with conn.transaction():
 # Committing the transaction
 conn.commit()
 
+end_time = time.time()
+
 # Saving the data frame containing the error files to a separate CSV file
 error_rows_cms.to_csv("Error rows in CMS data set.csv", index = False)
 
 # Printing the summary output
-print("Number of rows successfully inserted:", num_rows_successfully_inserted_cms)
-print("Number of rows not inserted due to error:", num_rows_error_cms)
+print("Time taken:", round(((end_time - start_time) / 60), 2), "minutes")
+print("Number of rows successfully inserted:", round(num_rows_successfully_inserted_cms / cms.shape[0] * 100, 2), "%")
+print("Number of rows unable to be inserted due to errors:", round(num_rows_error_cms / cms.shape[0] * 100, 2), "%")
 
 # Closing the SQL connection
 conn.close()

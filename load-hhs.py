@@ -28,6 +28,8 @@ error_rows_hhs = pd.DataFrame()
 num_rows_successfully_inserted_hhs = 0
 num_rows_error_hhs = 0
 
+start_time = time.time()
+
 # Using try-except blocks to perform transactions and insert rows into the database
 with conn.transaction():
     for column, row in hhs.iterrows():
@@ -145,12 +147,15 @@ with conn.transaction():
 # Committing the transaction
 conn.commit()
 
+end_time = time.time()
+
 # Saving the data frame containing the error files to a separate CSV file
 error_rows_hhs.to_csv("Error rows in HHS data set.csv", index = False)
 
 # Printing the summary output
-print("Number of rows successfully inserted:", num_rows_successfully_inserted_hhs)
-print("Number of rows not inserted due to error:", num_rows_error_hhs)
+print("Time taken:", round(((end_time - start_time) / 60), 2), "minutes")
+print("Number of rows successfully inserted:", round(num_rows_successfully_inserted_hhs / hhs.shape[0] * 100, 2), "%")
+print("Number of rows unable to be inserted due to errors:", round(num_rows_error_hhs / hhs.shape[0] * 100, 2), "%")
 
 # Closing the SQL connection
 conn.close()
