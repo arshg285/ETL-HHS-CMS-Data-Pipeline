@@ -153,9 +153,9 @@ end_time = time.time()
 error_rows_hhs.to_csv("Error rows in HHS data set.csv", index = False)
 
 # Printing the summary output
-print("Time taken:", round(((end_time - start_time) / 60), 2), "minutes")
-print("Number of rows successfully inserted:", round(num_rows_successfully_inserted_hhs / hhs.shape[0] * 100, 2), "%")
-print("Number of rows unable to be inserted due to errors:", round(num_rows_error_hhs / hhs.shape[0] * 100, 2), "%")
+print("Time taken:", round(((end_time - start_time) / 60), 2), "minutes\n")
+print("Number of rows successfully inserted:", round(num_rows_successfully_inserted_hhs / hhs.shape[0] * 100, 2), "%\n")
+print("Number of rows unable to be inserted due to errors:", round(num_rows_error_hhs / hhs.shape[0] * 100, 2), "%\n")
 
 # Closing the SQL connection
 conn.close()
