@@ -1,12 +1,12 @@
-# Importing libraries
 import psycopg
 import pandas as pd
-import requests
 import time
-import io
-from credentials import username, password
+import credentials as cd
+import numpy as np
 import sys
 from data_cleaning import data_cleaning_hginfo
+import warnings
+warnings.filterwarnings('ignore')
 
 # Data loading and cleaning
 input_date = sys.argv[1]
@@ -18,9 +18,9 @@ cms['emergency_services_provided'] = cms['Emergency Services'].map({'Yes': True,
 # Establishing SQL connection
 conn = psycopg.connect(
     host = "sculptor.stat.cmu.edu",
-    dbname = "arshg",
-    user = username,
-    password = password
+    dbname = , # Insert your dbname
+    user = , # Insert your username
+    password = # Insert your password
 )
 
 # Creating a cursor object

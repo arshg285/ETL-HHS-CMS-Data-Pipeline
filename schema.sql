@@ -22,6 +22,7 @@ create table address (
 -- Each identity have a unique identifier, single value for each attribute and each non-key attribute only depends on the primary key.
 
 create table capacity_info (
+	capacity_id serial primary key,
 	hospital_pk text REFERENCES address (hospital_pk),
 	collection_week date,
 	adult_hospital_beds numeric,
@@ -39,6 +40,7 @@ create table capacity_info (
 -- This table references the hospital_pk in the address_info table as the primary key in COVID_info table.
 
 Create table COVID_info (
+	covid_id serial primary key,
 	hospital_pk text REFERENCES address (hospital_pk),
 	hospital_name text NOT NULL,
 	collection_week date,
@@ -58,7 +60,8 @@ Create table COVID_info (
 -- The ratings table contains information about the rating for each hospital in the HHS data set.
 -- In addition to containing information about the overall rating, it also contains information about the type of hospital and whether it offers emergency services or not since that can potentially have an influence on the overall rating.
 
-create table ratings (	
+create table ratings (
+	rating_id serial primary key,
 	hospital_name text not null,
 	hospital_pk text references address (hospital_pk),
 	collection_week date,

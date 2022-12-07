@@ -1,7 +1,7 @@
 import psycopg
 import pandas as pd
 import time
-from credentials import username, password
+import credentials as cd
 import numpy as np
 import sys
 from data_cleaning import data_cleaning_hhs
@@ -13,12 +13,11 @@ hhs_file = sys.argv[1]
 file = str('/Users/arshmacbook/Desktop/36-614/Project/hhs_weekly_data_files/' + hhs_file) # Change this to user directory
 hhs = data_cleaning_hhs(file)
 
-# Establishing SQL connection
 conn = psycopg.connect(
     host = "sculptor.stat.cmu.edu",
-    dbname = "arshg",
-    user = username,
-    password = password
+    dbname = , # Insert your dbname
+    user = , # Insert your username
+    password = # Insert your password
 )
 
 # Creating a cursor object
