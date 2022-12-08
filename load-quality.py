@@ -11,16 +11,17 @@ warnings.filterwarnings('ignore')
 # Data loading and cleaning
 input_date = sys.argv[1]
 cms_file = sys.argv[2]
-file = str('/Users/arshmacbook/Desktop/36-614/data_engineering_project/hospital_quality_files/' + cms_file) # Change this to user directory
+path = str('/Users/arshmacbook/Desktop/36-614/data_engineering_project/hospital_quality_files/')  # Change this to the user directory
+file = str(path + cms_file)
 cms = data_cleaning_hginfo(input_date, file)
 cms['emergency_services_provided'] = cms['Emergency Services'].map({'Yes': True, 'No': False})
 
 # Establishing SQL connection
 conn = psycopg.connect(
     host = "sculptor.stat.cmu.edu",
-    dbname = cd., # Insert your dbname
-    user = cd., # Insert your username
-    password = cd. # Insert your password
+    dbname = cd.,  # Insert your dbname
+    user = cd.,  # Insert your username
+    password = cd.  # Insert your password
 )
 
 # Creating a cursor object
