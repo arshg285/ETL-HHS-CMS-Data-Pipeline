@@ -11,7 +11,7 @@ warnings.filterwarnings('ignore')
 # Data loading and cleaning
 input_date = sys.argv[1]
 cms_file = sys.argv[2]
-file = str('/Users/arshmacbook/Desktop/36-614/Project/hospital_quality_files/' + cms_file) # Change this to user directory
+file = str('/Users/arshmacbook/Desktop/36-614/data_engineering_project/hospital_quality_files/' + cms_file) # Change this to user directory
 cms = data_cleaning_hginfo(input_date, file)
 cms['emergency_services_provided'] = cms['Emergency Services'].map({'Yes': True, 'No': False})
 

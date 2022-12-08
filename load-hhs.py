@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 
 # Data loading and cleaning
 hhs_file = sys.argv[1]
-file = str('/Users/arshmacbook/Desktop/36-614/Project/hhs_weekly_data_files/' + hhs_file) # Change this to user directory
+file = str('/Users/arshmacbook/Desktop/36-614/data_engineering_project/hhs_weekly_data_files/' + hhs_file) # Change this to user directory
 hhs = data_cleaning_hhs(file)
 
 conn = psycopg.connect(
