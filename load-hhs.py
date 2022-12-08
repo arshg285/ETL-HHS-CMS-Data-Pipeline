@@ -15,9 +15,9 @@ hhs = data_cleaning_hhs(file)
 
 conn = psycopg.connect(
     host = "sculptor.stat.cmu.edu",
-    dbname = , # Insert your dbname
-    user = , # Insert your username
-    password = # Insert your password
+    dbname = cd., # Insert your dbname
+    user = cd., # Insert your username
+    password = cd. # Insert your password
 )
 
 # Creating a cursor object
@@ -37,17 +37,17 @@ with conn.transaction():
                 
                 # If a hospital already exists in the table then update values in the address table
                 cur.execute("SELECT hospital_pk FROM address")
-                existing_hospitals = pd.Series(cur.fetchall())
+                existing_hospitals = np.array([elem[0] for elem in pd.Series(cur.fetchall())])
                 if row.hospital_pk in existing_hospitals:
 
                     # Update info in address table
                     cur.execute("UPDATE address "
                                  "SET hospital_name = %(hospital_name)s, "
-                                 "address = $(address)s, "
+                                 "address = %(address)s, "
                                  "city = %(city)s, "
-                                 "state = $(state)s, "
+                                 "state = %(state)s, "
                                  "zip = %(zip)s, "
-                                 "fips_code) = %(fips_code)s"
+                                 "fips_code = %(fips_code)s"
                                  "WHERE hospital_pk = %(hospital_pk)s",
                                  {'hospital_name' : str(row.hospital_name),
                                   'hospital_pk' : str(row.hospital_pk),
@@ -152,7 +152,7 @@ end_time = time.time()
 error_rows_hhs.to_csv("Error rows in HHS data set.csv", index = False)
 
 # Printing the summary output
-print("Time taken:", round(((end_time - start_time) / 60), 2), "minutes\n")
+print("\nTime taken:", round(((end_time - start_time) / 60), 2), "minutes\n")
 print("Number of rows successfully inserted:", round(num_rows_successfully_inserted_hhs / hhs.shape[0] * 100, 2), "%\n")
 print("Number of rows unable to be inserted due to errors:", round(num_rows_error_hhs / hhs.shape[0] * 100, 2), "%\n")
 

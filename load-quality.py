@@ -18,9 +18,9 @@ cms['emergency_services_provided'] = cms['Emergency Services'].map({'Yes': True,
 # Establishing SQL connection
 conn = psycopg.connect(
     host = "sculptor.stat.cmu.edu",
-    dbname = , # Insert your dbname
-    user = , # Insert your username
-    password = # Insert your password
+    dbname = cd., # Insert your dbname
+    user = cd., # Insert your username
+    password = cd. # Insert your password
 )
 
 # Creating a cursor object
@@ -76,9 +76,9 @@ end_time = time.time()
 error_rows_cms.to_csv("Error rows in CMS data set.csv", index = False)
 
 # Printing the summary output
-print("Time taken:", round(((end_time - start_time) / 60), 2), "minutes")
-print("Number of rows successfully inserted:", round(num_rows_successfully_inserted_cms / cms.shape[0] * 100, 2), "%")
-print("Number of rows unable to be inserted due to errors:", round(num_rows_error_cms / cms.shape[0] * 100, 2), "%")
+print("\nTime taken:", round(((end_time - start_time) / 60), 2), "minutes")
+print("Number of rows successfully inserted:", round(num_rows_successfully_inserted_cms / cms.shape[0] * 100, 2), "%\n")
+print("Number of rows unable to be inserted due to errors:", round(num_rows_error_cms / cms.shape[0] * 100, 2), "%\n")
 
 # Closing the SQL connection
 conn.close()
