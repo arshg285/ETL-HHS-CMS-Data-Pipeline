@@ -18,5 +18,6 @@ The model `weekly_report.py` well generate report about the following questions 
 5. A graph shows COVID bed usage information of different hospital types.
 6. A map showing state with their COVID cases, which state has the lowest cases and which state has the highest cases
 7. A map showing states with their average hospital rating of that state
-You can run this code using: streamlit run weekly_report.py
+You can run this code using:
 
+`streamlit run weekly_report.py`
