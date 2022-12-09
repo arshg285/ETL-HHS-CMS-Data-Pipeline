@@ -1,4 +1,4 @@
-We have four modules in this GitHub repository: `data_cleaning`, `load_hhs.py` , `load_quality.py` and `weekly_report.py`
+We have four modules in this GitHub repository: `data_cleaning.py`, `load_hhs.py` , `load_quality.py` and `weekly_report.py`
 
 The module `data_cleaning.py`contains 2 functions: `data_cleaning_hhs(hhs_info)` and `data_cleaning_hginfo(date, hg_info)`. Both function identify all types of missing value as 'NA', change certain data types and read in the file as dataframe. In `data_cleaning_hginfo(date, hg_info)`, it input `date` as  a new column `collection_week` to the dataframe.  We do not need to run it individually, it runs inside `load_hhs.py` and `load_quality.py`.
 
