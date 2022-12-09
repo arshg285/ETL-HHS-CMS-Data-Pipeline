@@ -14,9 +14,9 @@ st.title('HHS and CMS Data Summary')
 # Establishing SQL connection
 conn = psycopg.connect(
     host = "sculptor.stat.cmu.edu",
-    dbname = cd.arsh_dbname,  # Insert your dbname
-    user = cd.arsh_username,  # Insert your username
-    password = cd.arsh_password  # Insert your password
+    dbname = cd.,  # Insert your dbname
+    user = cd.,  # Insert your username
+    password = cd.  # Insert your password
 )
 
 # Creating a cursor object
