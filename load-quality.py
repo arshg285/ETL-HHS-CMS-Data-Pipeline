@@ -5,13 +5,11 @@ import credentials as cd
 import sys
 from data_cleaning import data_cleaning_hginfo
 import warnings
-
 warnings.filterwarnings('ignore')
 
 # Data loading and cleaning
 input_date = sys.argv[1]
 cms_file = sys.argv[2]
-<<<<<<< HEAD
 path = str('/Users/arshmacbook/Desktop/36-614/data_engineering_project/\
     hospital_quality_files/')  # Change this to the user directory
 file = str(path + cms_file)
@@ -19,29 +17,13 @@ cms = data_cleaning_hginfo(input_date, file)
 cms['emergency_services_provided'] = cms['Emergency Services'].map(
     {'Yes': True, 'No': False}
     )
-=======
-path = str(
-    '/Users/arshmacbook/Desktop/36-614/data_engineering_project/'
-    'hospital_quality_files/')
-# Change this to the user directory
-file = str(path + cms_file)
-cms = data_cleaning_hginfo(input_date, file)
-cms['emergency_services_provided'] = \
-    cms['Emergency Services'].map({'Yes': True, 'No': False})
->>>>>>> 84898ec71de49245388a89f8f5f24678b86f060b
 
 # Establishing SQL connection
 conn = psycopg.connect(
     host="sculptor.stat.cmu.edu",
-<<<<<<< HEAD
     dbname=cd.arsh_dbname,  # Insert your dbname
     user=cd.arsh_username,  # Insert your username
     password=cd.arsh_password  # Insert your password
-=======
-    dbname=cd.,  # Insert your dbname
-    user=cd.,  # Insert your username
-    password=cd.  # Insert your password
->>>>>>> 84898ec71de49245388a89f8f5f24678b86f060b
 )
 
 # Creating a cursor object
@@ -53,25 +35,15 @@ num_rows_error_cms = 0
 
 start_time = time.time()
 
-<<<<<<< HEAD
 # Using try-except blocks to perform transactions and insert rows into the
 # database
-=======
-# Using try-except blocks to perform transactions and
-# insert rows into the database
->>>>>>> 84898ec71de49245388a89f8f5f24678b86f060b
 with conn.transaction():
     for column, row in cms.iterrows():
         try:
             with conn.transaction():
 
-<<<<<<< HEAD
                 # If a hospital already exists in the address table then add
                 # row to ratings table
-=======
-                # If a hospital already exists in the address table then
-                # add row to ratings table
->>>>>>> 84898ec71de49245388a89f8f5f24678b86f060b
                 cur.execute("INSERT into ratings "
                             "(hospital_name, "
                             "hospital_pk, "
@@ -88,20 +60,12 @@ with conn.transaction():
                             {'hospital_name': str(row['Facility Name']),
                              'hospital_pk': str(row['Facility ID']),
                              'collection_week': str(row.collection_week),
-<<<<<<< HEAD
                              'overall_quality_rating': float(row[
                                 'Hospital overall rating'
                                 ]),
                              'type': str(row['Hospital Ownership']),
                              'emergency_services_provided':
                                 row.emergency_services_provided})
-=======
-                             'overall_quality_rating': 
-                                 float(row['Hospital overall rating']),
-                             'type': str(row['Hospital Ownership']),
-                             'emergency_services_provided': 
-                                 row.emergency_services_provided})
->>>>>>> 84898ec71de49245388a89f8f5f24678b86f060b
 
         except Exception:
             row = dict(row)
@@ -121,19 +85,12 @@ error_rows_cms.to_csv("Error rows in CMS data set.csv", index=False)
 
 # Printing the summary output
 print("\nTime taken:", round(((end_time - start_time) / 60), 2), "minutes")
-<<<<<<< HEAD
 print("Number of rows successfully inserted:", round(
     num_rows_successfully_inserted_cms / cms.shape[0] * 100, 2
     ), "%\n")
 print("Number of rows unable to be inserted due to errors:", round(
     num_rows_error_cms / cms.shape[0] * 100, 2
     ), "%\n")
-=======
-print("Number of rows successfully inserted:", 
-      round(num_rows_successfully_inserted_cms/ cms.shape[0] * 100, 2), "%\n")
-print("Number of rows unable to be inserted due to errors:",
-      round(num_rows_error_cms / cms.shape[0] * 100, 2), "%\n")
->>>>>>> 84898ec71de49245388a89f8f5f24678b86f060b
 
 # Closing the SQL connection
 conn.close()
