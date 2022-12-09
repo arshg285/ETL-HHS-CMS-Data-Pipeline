@@ -1,12 +1,12 @@
 We have four modules in this GitHub repository: `data_cleaning`, `load_hhs.py` , `load_quality.py` and `weekly_report.py`
 
-The module `data_cleaning.py` idneify all type of missing value as 'NA' and make some change for data format. We do not need to run it individually, it runs inside `load_hhs.py` and `load_quality.py`
+The module `data_cleaning.py`contains 2 functions: `data_cleaning_hhs(hhs_info)` and `data_cleaning_hginfo(date, hg_info)`. Both function identify all types of missing value as 'NA', change certain data types and read in the file as dataframe. In `data_cleaning_hginfo(date, hg_info)`, it input `date` as  a new column `collection_week` to the dataframe.  We do not need to run it individually, it runs inside `load_hhs.py` and `load_quality.py`.
 
 The module `load_hhs.py` taking in the HHS data file as the input, performs data wrangling, and inserts rows from the CSV file into address table, capacity_info table and covid_info table as specified by `schema.sql`. You can run this code using:
 
 `python load_hhs.py [file_name]`
 
-The `load_quality.py` module takes in the CMS quality files, perferms data wrangling, and insert rows into quality table as specified by `schema.sql`. You can run this code using:
+The `load_quality.py` module takes in the CMS quality files, performs data wrangling, and insert rows into quality table as specified by `schema.sql`. You can run this code using:
 
 `python load_quality.py [collection_date] [file_name]`
 
