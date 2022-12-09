@@ -69,6 +69,9 @@ sql_query_2 = "select ratings.hospital_name, \
 df_sql_query_1 = pd.read_sql_query(sql_query_1, conn).dropna().head(n = 10)
 df_sql_query_2 = pd.read_sql_query(sql_query_2, conn).dropna().head(n = 10)
 
+st.dataframe(df_sql_query_1)
+st.dataframe(df_sql_query_2)
+
 # Generating plots
 n = df_sql_query_1.hospital_name.shape[0]
 ind = np.arange(n)
@@ -78,7 +81,6 @@ plt.bar(
     ind,
     df_sql_query_1.adult_occupied,
     width,
-    color = 'blue',
     label = 'Adult',
     )
 
@@ -86,15 +88,14 @@ plt.bar(
     ind + width,
     df_sql_query_1.child_occupied,
     width,
-    color = 'orange',
     label = 'Child',
     )
 
 plt.xticks(
     ind + width / 2,
     df_sql_query_1.hospital_name,
-    rotation = 45,
-    fontsize = 10
+    rotation = 90,
+    fontsize = 6
     )
 
 plt.xlabel('Hospitals')
@@ -103,13 +104,13 @@ plt.title('Bed Usage Information For Top 10 Rated Hospitals')
 plt.legend()
 plt.tight_layout()
 plt.savefig("/Users/arshmacbook/Desktop/36-614/data_engineering_project/Plots/summary_3.1.png")
+plt.close()
 st.image("/Users/arshmacbook/Desktop/36-614/data_engineering_project/Plots/summary_3.1.png")
 
 plt.bar(
     ind,
     df_sql_query_2.adult_occupied,
     width,
-    color = 'blue',
     label = 'Adult',
     )
 
@@ -117,15 +118,14 @@ plt.bar(
     ind + width,
     df_sql_query_2.child_occupied,
     width,
-    color = 'orange',
     label = 'Child',
     )
 
 plt.xticks(
     ind + width / 2,
     df_sql_query_2.hospital_name,
-    rotation = 45,
-    fontsize = 10
+    rotation = 90,
+    fontsize = 6
     )
 
 plt.xlabel('Hospitals')
@@ -134,6 +134,7 @@ plt.title('Bed Usage Information For Lowest 10 Rated Hospitals')
 plt.legend()
 plt.tight_layout()
 plt.savefig("/Users/arshmacbook/Desktop/36-614/data_engineering_project/Plots/summary_3.2.png")
+plt.close()
 st.image("/Users/arshmacbook/Desktop/36-614/data_engineering_project/Plots/summary_3.2.png")
 
 # Question 4
@@ -170,6 +171,8 @@ sql_query = "select all_beds.collection_week as collection_week, \
 
 covid_and_all_beds_used_per_week = pd.read_sql_query(sql_query, conn)
 
+st.dataframe(covid_and_all_beds_used_per_week)
+
 # Generating plot
 n = covid_and_all_beds_used_per_week.collection_week.shape[0]
 ind = np.arange(n)
@@ -179,21 +182,20 @@ plt.bar(
     ind,
     covid_and_all_beds_used_per_week.all_beds_used,
     width,
-    label = "All cases"
+    label = "All Cases"
     )
 
 plt.bar(
     ind + width,
     covid_and_all_beds_used_per_week.covid_beds_used,
     width,
-    label = "COVID cases"
+    label = "COVID Cases"
     )
 
 plt.xticks(
     ind + width / 2,
     covid_and_all_beds_used_per_week.collection_week,
-    rotation = 45,
-    fontsize = 10
+    rotation = 45
     )
 
 plt.xlabel("Collection Week")
@@ -202,6 +204,7 @@ plt.title("Number of beds used over time for all cases and COVID cases")
 plt.legend()
 plt.tight_layout()
 plt.savefig("/Users/arshmacbook/Desktop/36-614/data_engineering_project/Plots/summary_4.png")
+plt.close()
 st.image("/Users/arshmacbook/Desktop/36-614/data_engineering_project/Plots/summary_4.png")
 
 
@@ -262,8 +265,12 @@ sql_query = "select address.state as state, \
         from address \
         ) as address \
     on address.hospital_pk = covid_info.hospital_pk \
-    group by state"
+    group by state \
+    order by covid_cases desc"
 covid_cases_per_state = pd.read_sql_query(sql_query, conn)
+
+st.write("Top 10 states with highest covid cases")
+st.dataframe(covid_cases_per_state.head(n = 10))
 
 # Generating plot
 covid_cases_map = px.choropleth(
