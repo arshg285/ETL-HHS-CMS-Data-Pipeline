@@ -1,14 +1,14 @@
 # Arsh's credentials
-arsh_dbname = "arshg"
-arsh_username = "arshg"
-arsh_password = "dohF6meex"
+arsh_dbname = "null"
+arsh_username = "null"
+arsh_password = "null"
 
 # Handi's credentials
-handi_dbname = "handi"
-handi_username = "handi"
-handi_password = "aothae7Lo"
+handi_dbname = "null"
+handi_username = "null"
+handi_password = "null"
 
 # Zoe's credentials
-zoe_dbname = "ziyangr"
-zoe_username = "ziyangr"
-zoe_password = "Jeesaej6P"
+zoe_dbname = "null"
+zoe_username = "null"
+zoe_password = "null"
