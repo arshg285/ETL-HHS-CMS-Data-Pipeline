@@ -12,11 +12,13 @@ warnings.filterwarnings('ignore')
 input_date = sys.argv[1]
 cms_file = sys.argv[2]
 path = str(
-    '/Users/arshmacbook/Desktop/36-614/data_engineering_project/hospital_quality_files/')
+    '/Users/arshmacbook/Desktop/36-614/data_engineering_project/'
+    'hospital_quality_files/')
 # Change this to the user directory
 file = str(path + cms_file)
 cms = data_cleaning_hginfo(input_date, file)
-cms['emergency_services_provided'] = cms['Emergency Services'].map({'Yes': True, 'No': False})
+cms['emergency_services_provided'] = \
+    cms['Emergency Services'].map({'Yes': True, 'No': False})
 
 # Establishing SQL connection
 conn = psycopg.connect(
@@ -35,7 +37,8 @@ num_rows_error_cms = 0
 
 start_time = time.time()
 
-# Using try-except blocks to perform transactions and insert rows into the database
+# Using try-except blocks to perform transactions and
+# insert rows into the database
 with conn.transaction():
     for column, row in cms.iterrows():
         try:
@@ -59,9 +62,11 @@ with conn.transaction():
                             {'hospital_name': str(row['Facility Name']),
                              'hospital_pk': str(row['Facility ID']),
                              'collection_week': str(row.collection_week),
-                             'overall_quality_rating': float(row['Hospital overall rating']),
+                             'overall_quality_rating': 
+                                 float(row['Hospital overall rating']),
                              'type': str(row['Hospital Ownership']),
-                             'emergency_services_provided': row.emergency_services_provided})
+                             'emergency_services_provided': 
+                                 row.emergency_services_provided})
 
         except Exception as e:
             row = dict(row)
@@ -81,9 +86,9 @@ error_rows_cms.to_csv("Error rows in CMS data set.csv", index=False)
 
 # Printing the summary output
 print("\nTime taken:", round(((end_time - start_time) / 60), 2), "minutes")
-print("Number of rows successfully inserted:", round(num_rows_successfully_inserted_cms
-                                                     / cms.shape[0] * 100, 2), "%\n")
-print("Number of rows unable to be inserted due to errors:", 
+print("Number of rows successfully inserted:", 
+      round(num_rows_successfully_inserted_cms/ cms.shape[0] * 100, 2), "%\n")
+print("Number of rows unable to be inserted due to errors:",
       round(num_rows_error_cms / cms.shape[0] * 100, 2), "%\n")
 
 # Closing the SQL connection
