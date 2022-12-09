@@ -5,7 +5,6 @@ import numpy as np
 import plotly.express as px
 import matplotlib.pyplot as plt
 import warnings
-from fpdf import FPDF
 import streamlit as st
 warnings.filterwarnings('ignore')
 
@@ -30,14 +29,15 @@ cur = conn.cursor()
 # Question 1
 # Summary records compared to previous weeks
 st.header('Summary 1: Comparison of hospital records over time')
-st.write("The table and graph below show how many hospital records were loaded in the most recent week, and how that compares to previous weeks.")
+st.write("The tables below show how many hospital records were loaded in the most recent week, and how that compares to previous weeks.")
 
 # SQL Query
-sql_query = "select collection_week, cnt, \
-    cnt-LAG(cnt) over (order by collection_week) as changes \
+sql_query = "select collection_week, \
+    count, \
+    count-LAG(count) over (order by collection_week) as changes \
     from ( \
         select collection_week, \
-        count(*) as cnt \
+        count(*) as count \
         from capacity_info \
         group by collection_week \
         ) AS weekly_record \
@@ -45,15 +45,21 @@ sql_query = "select collection_week, cnt, \
 
 hhs_summary = pd.read_sql_query(sql_query, conn)
 
-# HHS
-st.table(hhs_summary)
-st.bar_chart(hhs_summary['cnt'] )
+sql_query = "select collection_week, \
+    count, \
+    count-LAG(count) over (order by collection_week) as changes \
+    from (select collection_week, count(*) as count \
+    from ratings \
+    group by collection_week) AS weekly_record \
+    order by collection_week desc"
 
-# CMS
-# cms_summary = pd.read_csv('/Users/zoe/Desktop/data_engineering/Project/data_engineering_project/cms_summary.csv')
-# st.write("This is a summary of the changes in most recent week compared to previous weeks")
-# st.table(cms_summary)
-# st.bar_chart(cms_summary['cnt'])
+cms_summary = pd.read_sql_query(sql_query, conn)
+
+st.subheader("Changes in weekly entries for HHS data")
+st.table(hhs_summary)
+
+st.subheader("Changes in weekly entries for CMS quality data")
+st.table(cms_summary)
 
 # Question 2
 # Summary records compared to previous 4 weeks
