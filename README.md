@@ -11,7 +11,7 @@ The model `weekly_report.py` well generate report about the following questions 
 2. A table summarizing the number of adult and pediatric beds available this week, the number used, and the number used by patients with COVID, compared to the 4 most recent weeks
 3. A graph summarizing the fraction of beds currently in use by hospital quality rating, so we can compare high-quality and low-quality hospitals
 4. A plot of the total number of hospital beds used per week, over all time, split into all cases and COVID cases
-5. Map?
+5. A graph shows COVID bed usage information of different hospital types.
 6. A map showing state with their COVID cases, which state has the lowest cases and which state has the highest cases
 7. A map showing states with their average hospital rating of that state
 You can run this code using: streamlit run weekly_report.py
